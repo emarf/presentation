@@ -1,0 +1,287 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <title>Async in Javascript</title>
+
+  <link rel="stylesheet" href="dist/reset.css">
+  <link rel="stylesheet" href="dist/reveal.css">
+  <link rel="stylesheet" href="dist/theme/moon.css" id="theme">
+
+  <!-- Theme used for syntax highlighted code -->
+  <link rel="stylesheet" href="plugin/highlight/monokai.css" id="highlight-theme">
+</head>
+
+<body>
+  <div class="reveal">
+    <div class="slides">
+      <section>
+        <h2>Async in Javascript</h2>
+        <p style="font-size: .8em;">by <a href="https://github.com/emarf" target="blank">Roman Ivashkevich(emarf)</a>
+        </p>
+      </section>
+      <section>
+        <section>
+          <p>What is a synchronous task?</p>
+          <p class="fragment">For example we have two lines of code following each other. Synchronous task mean that
+            second line of code can`t execute until first one has finished executing. At the beggining of execution
+            call will go to the call stack and after completes it is thrown from the stack. </p>
+        </section>
+        <section>
+          <pre><code data-trim data-noescape data-line-numbers>
+              function third(str) {
+                return str + 'Morgan.';
+              }
+              
+              function second() {
+                return Third('Dexter');
+              }
+              
+              function first() {
+                let name = Second();
+                console.log('My name is', +name);
+              }
+              
+              first();
+          </code></pre>
+        </section>
+        <section>
+          <img data-src='css/image/sync1.png'>
+        </section>
+        <section>
+          <img data-src='css/image/sync2.png'>
+        </section>
+        <section>
+          <img data-src='css/image/sync3.png'>
+        </section>
+        <section>
+          <img data-src='css/image/sync4.png'>
+        </section>
+        <section>
+          <img data-src='css/image/sync5.png'>
+        </section>
+        <section>
+          <img data-src='css/image/sync6.png'>
+          <img data-src='css/image/sync7.png'>
+        </section>
+      </section>
+      <section>
+        <section>
+          <p>What is a asynchronous task?</p>
+          <p class="fragment">
+            <strong style="color: yellow;">The essence of asynchrony is that we don`t know exactly when code execute!
+            </strong>
+            Lets say we have two lines of code following each other. But now asynchronous lets us run first line in
+            background so that second execute without waiting of complite first one. We use this for example when we
+            upload data from server and lose connection or we have slow internet connection.
+          </p>
+        </section>
+        <section>
+          <pre><code data-trim data-noescape data-line-numbers>
+              console.log('Hello');
+
+              setTimeout(function callback() {
+                console.log('TopRoman');
+              }, 2000);
+
+              console.log('I am');
+          </code></pre>
+        </section>
+        <section>
+          <img data-src='./css/image/async1.png' alt="reveal.js logo">
+        </section>
+        <section>
+          <img data-src='css/image/async2.png'>
+        </section>
+        <section>
+          <img data-src='css/image/async3.png'>
+        </section>
+        <section>
+          <img data-src='css/image/async4.png'>
+        </section>
+        <section>
+          <img data-src='css/image/async5.png'>
+        </section>
+        <section>
+          <img data-src='css/image/async6.png'>
+          <img data-src='css/image/async7.png'>
+        </section>
+      </section>
+      <section>
+        <section>
+          <p>Callback function</p>
+        </section>
+        <section>
+          <pre><code data-trim data-noescape data-line-numbers>
+            loadScript('1.js', function(error, script) {
+
+              if (error) {
+                handleError(error);
+              } else {
+                // ...
+                loadScript('2.js', function(error, script) {
+                  if (error) {
+                    handleError(error);
+                  } else {
+                    // ...
+                    loadScript('3.js', function(error, script) {
+                      if (error) {
+                        handleError(error);
+                      } else {
+                        // ...continue after all scripts are loaded (*)
+                      }
+                    });
+                  }
+                });
+              }
+            });
+          </code></pre>
+        </section>
+        <section>
+          <pre><code data-trim data-noescape data-line-numbers>
+              loadScript('1.js', function (error, script) {
+                if (error) {
+                  handleError(error);
+                } else {
+                  // ...
+                  loadScript('2.js', function (error, script) {
+                    if (error) {
+                      handleError(error);
+                    } else {
+                      // ...
+                      loadScript('3.js', function (error, script) {
+                        if (error) {
+                          handleError(error);
+                        } else {
+                          // ...continue after all scripts are loaded (*)
+                          loadScript('4.js', function (error, script) {
+                            if (error) {
+                              handleError(error);
+                            } else {
+                              // ...
+                              loadScript('5.js', function (error, script) {
+                                if (error) {
+                                  handleError(error);
+                                } else {
+                                  // ...
+                                  loadScript('6.js', function (error, script) {
+                                    if (error) {
+                                      handleError(error);
+                                    } else {
+                                            // grow right
+                                      // ... ------------------------------->
+                                    }
+                                  });
+                                }
+                              });
+                            }
+                          });
+                        }
+                      });
+                    }
+                  });
+                }
+              });
+            </code></pre>
+        </section>
+        <section>
+          <pre><code data-trim data-noescape data-line-numbers>
+              loadScript('1.js')
+              .then((script) => loadScript('2.js'))
+              .then((script) => loadScript('3.js'))
+              .then((script) => loadScript('4.js'))
+              .then((script) => loadScript('5.js'))
+              .then((script) => loadScript('6.js'));
+            //...
+            </code></pre>
+        </section>
+      </section>
+      <section>
+        <section>
+          <p>Promises</p>
+        </section>
+        <section>
+          <pre><code data-trim data-noescape data-line-numbers>
+            var isMomHappy = false;
+            // Promise
+            var willIGetNewPhone = new Promise(
+                function (resolve, reject) {
+                    if (isMomHappy) {
+                        var phone = {
+                            brand: 'Samsung',
+                            color: 'black'
+                        };
+                        resolve(phone); // resolve
+                    } else {
+                        var reason = new Error('mom is not happy');
+                        reject(reason); // reject
+                    }
+                }
+            );
+            </code></pre>
+        </section>
+      </section>
+      <section>
+        <section>Async/await</section>
+        <section>
+          <pre><code data-trim data-noescape data-line-numbers>
+          // async make function asynchronous
+          async function loadJson(url) { 
+
+            let response = await fetch(url); 
+          
+            if (response.status == 200) {
+              let json = await response.json(); 
+              return json;
+            }
+          
+            throw new Error(response.status);
+          }
+          
+          loadJson('no-such-user.json')
+            .catch(alert);// error 404
+          </code></pre>
+        </section>
+        <section style="text-align: left;">
+          Key word async before the function declaration:
+          <p class="fragment">
+            - Makes it always return a promise.<br>
+            - Allows await to be used in it.
+          </p>
+          </p>
+          <p class="fragment">
+            The await keyword before a promise makes JavaScript wait until that promise settles, and then:
+          <p class="fragment">
+            - If it’s an error, the exception is generated — same as if throw error were called at that very place.<br>
+            - Otherwise, it returns the result.
+          </p>
+          </p>
+        </section>
+      </section>
+      <section>
+        <h1>Thanks for watching</h1>
+      </section>
+    </div>
+  </div>
+
+  <script src="dist/reveal.js"></script>
+  <script src="plugin/notes/notes.js"></script>
+  <script src="plugin/markdown/markdown.js"></script>
+  <script src="plugin/highlight/highlight.js"></script>
+  <script>
+    // More info about initialization & config:
+    // - https://revealjs.com/initialization/
+    // - https://revealjs.com/config/
+    Reveal.initialize({
+      hash: true,
+      slideNumber: true,
+      // Learn about plugins: https://revealjs.com/plugins/
+      plugins: [RevealMarkdown, RevealHighlight, RevealNotes]
+    });
+  </script>
+</body>
+
+</html>
